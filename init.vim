@@ -1,4 +1,5 @@
 call plug#begin('~/.vim/plugged')
+  Plug 'icymind/neosolarized'
   Plug 'tpope/vim-eunuch'
   Plug 'terryma/vim-multiple-cursors'
   Plug 'airblade/vim-gitgutter'
@@ -8,15 +9,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'scrooloose/syntastic'
   Plug 'godlygeek/tabular'
   Plug 'rust-lang/rust.vim'
-  Plug 'altercation/vim-colors-solarized'
   Plug 'w0rp/ale'
-  Plug 'autozimu/LanguageClient-neovim', {
-    \ 'branch': 'next',
-    \ 'do': 'bash install.sh',
-    \ }
 
   " (Optional) Multi-entry selection UI.
-  Plug 'junegunn/fzf' 
+  Plug 'junegunn/fzf'
   Plug 'junegunn/fzf.vim'
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 call plug#end()
@@ -26,11 +22,49 @@ set number
 set cursorline
 syntax enable
 
+
 let g:airline#extensions#tabline#enabled = 1
-let g:solarized_termcolors=256
 let g:deoplete#enable_at_startup = 1
 set background=light
-colorscheme solarized
+set termguicolors
+colorscheme NeoSolarized
+
+let g:LanguageClient_serverCommands = {
+    \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'], }
+
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 1
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_enter = 0
+let g:ale_virtualtext_cursor = 1
+let g:ale_rust_rls_config = {
+  \ 'rust': {
+    \ 'all_targets': 1,
+    \ 'build_on_save': 1,
+    \ 'clippy_preference': 'on'
+    \ }
+  \ }
+let g:ale_rust_rls_toolchain = ''
+let g:ale_linters = {'rust': ['rls']}
+highlight link ALEWarningSign Todo
+highlight link ALEErrorSign WarningMsg
+highlight link ALEVirtualTextWarning Todo
+highlight link ALEVirtualTextInfo Todo
+highlight link ALEVirtualTextError WarningMsg
+highlight ALEError guibg=None
+highlight ALEWarning guibg=None
+let g:ale_sign_error = "✖"
+let g:ale_sign_warning = "⚠"
+let g:ale_sign_info = "i"
+let g:ale_sign_hint = "➤"
+
+nnoremap <silent> K :ALEHover<CR>
+nnoremap <silent> gd :ALEGoToDefinition<CR>
+"nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+"noremap <silent> H :call LanguageClient_textDocument_hover()<CR>
+"noremap <silent> Z :call LanguageClient_textDocument_definition()<CR>
+"noremap <silent> R :call LanguageClient_textDocument_rename()<CR>
+"noremap <silent> S :call LanugageClient_textDocument_documentSymbol()<CR>
 
 " fuzzy
 let $FZF_DEFAULT_COMMAND = "rg --smart-case --hidden --follow --no-heading --files --glob '!.git/'"
